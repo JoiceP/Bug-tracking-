@@ -1,13 +1,28 @@
 bugs = []
 
-descricao = [
-    "(1) Falha no login (Nome de usuário, endereço de e-mail ou número de telefone)",
-    "(2) Falha no login - Senha"
-]
+descricoes = {
+    "1": "Falha no login (Usuário/E-mail/Telefone)",
+    "2": "Falha no login - Senha"
+}
 
-prioridade = ["1 - Alta", "2 - Média", "3 - Baixa"]
+prioridades = {
+    "1": "Alta",
+    "2": "Média",
+    "3": "Baixa"
+}
 
-status = ["(1) Pendente", "(2) Concluído"]
+statuss = {
+    "1": "Pendente",
+    "2": "Concluído"
+}
+
+
+def indice(descricao, prioridade, status):
+    texto_descricao = descricoes[descricao]
+    texto_prioridade = prioridades[prioridade]
+    texto_status = statuss[status]
+
+    return texto_descricao, texto_prioridade, texto_status
 
 
 while True:
@@ -17,75 +32,82 @@ while True:
 
     if menu == "1":
 
-        print("\nEscolha a descrição do bug:")
-        for item in descricao:
-            print(item)
-
-        menudescricao = input("Número: ")
-
-        while menudescricao not in ("1", "2"):
+        print(descricoes)
+        escolha_descricao = input("\nEscolha qual seria o bug pelo número:")
+        while escolha_descricao not in ("1", "2"):
             print(opcaoinvalida)
-            menudescricao = input("Número: ")
+            escolha_descricao = input(
+                "Escolha qual seria o bug pelo número:\n")
 
-        indice_descricao = int(menudescricao) - 1
-        descricao_escolhida = descricao[indice_descricao]
-
-        print("\nEscolha a prioridade:")
-        for item in prioridade:
-            print(item)
-
-        menuprioridade = input("Número: ")
-
-        while menuprioridade not in ("1", "2", "3"):
+        print(prioridades)
+        escolha_prioridade = input("\nEscolha a prioridade:")
+        while escolha_prioridade not in ("1", "2", "3"):
             print(opcaoinvalida)
-            menuprioridade = input("Número: ")
-
-        indice_prioridade = int(menuprioridade) - 1
-        prioridade_escolhida = prioridade[indice_prioridade]
-
-        print("\nEscolha o status:")
-        for item in status:
-            print(item)
-
-        menustatus = input("Número: ")
-
-        while menustatus not in ("1", "2"):
+            escolha_prioridade = input("\nEscolha a prioridade:")
+            prioridade_txt = escolha_prioridade
+        print(statuss)
+        escolha_status = input("\nEscolha o status:")
+        while escolha_status not in ("1", "2"):
             print(opcaoinvalida)
-            menustatus = input("Número: ")
+            escolha_status = input("\nEscolha o status:")
 
-        indice_status = int(menustatus) - 1
-        status_escolhido = status[indice_status]
+        print("Bug cadastrado com sucesso!")
+
+        texto_descricao, texto_prioridade, texto_status = indice(
+            escolha_descricao, escolha_prioridade, escolha_status
+        )
 
         bug_criado = {
-            "descricao": descricao_escolhida,
-            "prioridade": prioridade_escolhida,
-            "status": status_escolhido
+            "Descrição": texto_descricao,
+            "Prioridade": texto_prioridade,
+            "Status": texto_status
         }
 
         bugs.append(bug_criado)
 
-        print("\nBug cadastrado com sucesso!")
-
     elif menu == "2":
-
         if not bugs:
-            print("\nSem bugs cadastrados")
-
+            print("Nenhum bug cadastrado!")  # dar mais opções
         else:
-            print("\nLISTA DE BUGS:\n")
+            print("Esses são os seus bugs cadastrados:")
+            print(bugs)
+            print("O que gostaria de fazer agora?")
+        menuexcluireditar = input(
+            " (1) - Menu Principal \n (2) - Excluir/Editar Bug \n (3) - Sair\n")
 
-            for i, bug in enumerate(bugs, start=1):
-                print(f"BUG {i}")
-                print("Descrição:", bug["descricao"])
-                print("Prioridade:", bug["prioridade"])
-                print("Status:", bug["status"])
+        while menuexcluireditar not in ("1", "2", "3"):
+            print(opcaoinvalida)
+            menuexcluireditar = input(
+                " (1) - Menu Principal \n (2) - Excluir/Editar Bug \n (3) - Sair\n")
+        if menuexcluireditar == "1":
+            print(menu)
 
-            print("\nO que deseja fazer agora?")
-            input("(ENTER para voltar ao menu)")
+        elif menuexcluireditar == "2":
+            escolha_excluir_editar = input(
+                "O que voce deseja? \n (1) Excluir bug cadastrado \n (2) Editar bug cadastrado")
+            while escolha_excluir_editar not in ("1", "2"):
+                print(opcaoinvalida)
+                escolha_excluir_editar = input(
+                    "O que voce deseja? \n (1) Excluir bug cadastrado \n (2) Editar bug cadastrado")
+            if escolha_excluir_editar == "1":
+
+                excluir_bug = print(bugs), input(
+                    "Selecione o número do bug que deseja excluir:")
+
+        elif menuexcluireditar == "3":
+            print("Saindo....")
+            break
 
     elif menu == "3":
         print("Saindo...")
         break
 
-    else:
-        print(opcaoinvalida)
+# Mostrar bugs numerados
+# Realmente excluir pelo índice
+# Criar funções: cadastrar_bug() / listar_bugs() /excluir_bug()
+# Não repetir inputs (reutilizar função de validação)
+# Fluxo do menu 2 está quebrado
+# Exclusão ainda não existe de verdade
+# Opção 1 (menu principal) não volta pro menu
+# Mistura responsabilidades no mesmo bloco
+# Menu principla (opção 2, corrigir)
