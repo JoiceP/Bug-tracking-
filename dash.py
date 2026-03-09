@@ -1,53 +1,36 @@
+import json
 bugs = []
 
-descricoes = {
-    "1": "Falha no login (Usuário/E-mail/Telefone)",
-    "2": "Falha no login - Senha"
-}
+with open("classificacoes.json", encoding="utf-8") as classificacoes:
+    dados = json.load(classificacoes)
+    descricoes = dados["descricoes"]
+    prioridades = dados["prioridades"]
+    statuss = dados["statuss"]
 
-prioridades = {
-    "1": "Baixa",
-    "2": "Média",
-    "3": "Alta"
-}
-
-statuss = {
-    "1": "Pendente",
-    "2": "Concluído"
-}
 
 opcaoinvalida = ("\n    Opção inválida!\n")
 
 
-# Criar funções: cadastrar_bug() / listar_bugs() / excluir_bugs()
+def cadastro_aux(opcoes, mensagem):
+    print()
+    for i, texto in opcoes.items():
+        print(f"{i} - {texto}")
+
+    escolha = input(mensagem)
+
+    while escolha not in opcoes:
+        print(opcaoinvalida)
+        escolha = input(mensagem)
+    return escolha
 
 
 def cadastrar_bug():
 
-    print("\nTipos de bug disponíveis: ")
-    for i, texto in descricoes.items():
-        print(f"{i} - {texto}")
-    escolha_descricao = input("\nEscolha qual seria a descrição do bug: \n")
-    while escolha_descricao not in descricoes:
-        print(opcaoinvalida)
-        escolha_descricao = input(
-            "Escolha qual seria o bug pelo número: \n")
+    escolha_descricao = cadastro_aux(descricoes, "\nEscolha a descrição: ")
 
-    for i, texto in prioridades.items():
-        print(f"{i} - {texto}")
+    escolha_prioridade = cadastro_aux(prioridades, "\nEscolha a prioridade: ")
 
-    escolha_prioridade = input("\nEscolha a prioridade: \n")
-    while escolha_prioridade not in prioridades:
-        print(opcaoinvalida)
-        escolha_prioridade = input("\nEscolha a prioridade: \n")
-
-    for i, texto in statuss.items():
-        print(f"{i} - {texto}")
-
-    escolha_status = input("\nEscolha o status: \n")
-    while escolha_status not in statuss:
-        print(opcaoinvalida)
-        escolha_status = input("\nEscolha o status: \n")
+    escolha_status = cadastro_aux(statuss, "\nEscolha o status: ")
 
     print("\nBug cadastrado com sucesso!")
 
@@ -77,9 +60,11 @@ def listar_bugs():
 
 
 def excluir_bugs():
-
+    if not bugs:
+        print("Nenhum bug cadastrado")
+        return
     listar_bugs()
-    excluir_bug = int(input("Selecione o número do bug que deseja excluir:"))
+    excluir_bug = int(input("Selecione o número do bug que deseja excluir:\n"))
     excluir_bug = excluir_bug - 1
 
     if 0 <= excluir_bug < len(bugs):
@@ -87,19 +72,20 @@ def excluir_bugs():
         del bugs[excluir_bug]
         print(f"Bug {excluir_bug + 1} excluído com sucesso!")
     else:
-        print("Número inválido! Não existe bug com esse número.")
+        print("\nNúmero inválido! Não existe bug com esse número.\n")
         # opcao de cancelar
 
 
 def editar_bugs():
+
     if not bugs:
         print("Nenhum bug cadastrado.")
         return
     listar_bugs()
 
     editar_bug = int(input("Selecione o número do bug que deseja editar:"))
-    indice = editar_bug - 1
-    if not (0 <= indice < len(bugs)):
+    indice_edit = editar_bug - 1
+    if not (0 <= indice_edit < len(bugs)):
         print("Número inválido.")
         return
 
@@ -112,35 +98,27 @@ def editar_bugs():
             "O que voce deseja editar? \n (1) Descrição \n (2) Prioridade \n (3) Status \n (4) Editar tudo \n (5) Cancelar")
 
     if menu_editar_bug == "1":
-        print(descricoes)
-        nova_descricao = input(
-            "\nEscolha qual seria a nova descrição do bug: \n")
 
-        while nova_descricao not in descricoes:
-            print(opcaoinvalida)
-            nova_descricao = input(
-                "Escolha qual seria o bug pelo número: \n")
+        nova_descricao = cadastro_aux(
+            descricoes, "\nEscolha a nova descrição: ")
 
-        bugs[indice]["descricao"] = descricoes[nova_descricao]
+        bugs[indice_edit]["descricao"] = descricoes[nova_descricao]
         print("Bug atualizado com sucesso!")
     elif menu_editar_bug == "2":
-        print(prioridades)
-        nova_prioridade = input("\n Escolha a nova prioridade: \n")
-        while nova_prioridade not in prioridades:
-            print(opcaoinvalida)
-            nova_prioridade = input("\n Escolha a nova prioridade: \n")
 
-        bugs[indice]["prioridade"] = prioridades[nova_prioridade]
+        nova_prioridade = cadastro_aux(
+            prioridades, "\nEscolha a nova prioridade: ")
+
+        bugs[indice_edit]["prioridade"] = prioridades[
+            nova_prioridade]
         print("Bug atualizado com sucesso!")
     elif menu_editar_bug == "3":
-        print(statuss)
-        novo_status = input("\n Escolha o novo status: \n")
-        while novo_status not in statuss:
-            print(opcaoinvalida)
-            novo_status = input("\n Escolha o novo status: \n")
 
-        bugs[indice]["status"] = statuss[novo_status]
+        novo_status = cadastro_aux(statuss, "\nEscolha o novo status: ")
+
+        bugs[indice_edit]["status"] = statuss[novo_status]
         print("Bug atualizado com sucesso!")
+
     # elif menu_editar_bug == "4":
 
     elif menu_editar_bug == "5":
@@ -170,6 +148,9 @@ while True:
     elif menu == "2":
         listar_bugs()
 
+        if not bugs:
+            continue
+
         print("O que gostaria de fazer agora?")
         menuexcluireditar = input(
             " (1) - Voltar ao Menu Principal \n (2) - Excluir/Editar bug \n (3) - Sair\n")
@@ -182,12 +163,16 @@ while True:
             continue
 
         elif menuexcluireditar == "2":
+            if not bugs:
+                print("Voce não tem nenhum bug cadastrado")
+                continue
+
             escolha_excluir_editar = input(
-                "O que voce deseja? \n (1) Excluir bug cadastrado \n (2) Editar bug cadastrado")
+                "O que voce deseja? \n (1) Excluir bug cadastrado \n (2) Editar bug cadastrado\n")
             while escolha_excluir_editar not in ("1", "2"):
                 print(opcaoinvalida)
                 escolha_excluir_editar = input(
-                    "O que voce deseja? \n (1) Excluir bug cadastrado \n (2) Editar bug cadastrado")
+                    "O que voce deseja? \n (1) Excluir bug cadastrado \n (2) Editar bug cadastrado\n \n")
             if escolha_excluir_editar == "1":
                 excluir_bugs()
             elif escolha_excluir_editar == "2":

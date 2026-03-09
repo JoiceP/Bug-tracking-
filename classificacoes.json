@@ -1,0 +1,15 @@
+{
+    "descricoes": {
+        "1": "Falha no login (Usuário/E-mail/Telefone)",
+        "2": "Falha no login - Senha"
+    },
+    "prioridades": {
+        "1": "Baixa",
+        "2": "Média",
+        "3": "Alta"
+    },
+    "statuss": {
+        "1": "Pendente",
+        "2": "Concluído"
+    }
+}

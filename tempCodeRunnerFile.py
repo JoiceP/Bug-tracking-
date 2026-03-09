@@ -1,0 +1,1 @@
+excluir_bug = int(input("Selecione
